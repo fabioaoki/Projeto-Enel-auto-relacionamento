@@ -1,6 +1,7 @@
 package com.example.enel.service;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,22 @@ public class PessoaService {
 				.cpfOrigem(pessoaDto.getCpfOrigem()).build();
 		pessoaRepository.save(pessoa);
 		return pessoaDto;
+	}
+
+	public PessoaDto getById(long cpf) {
+		Pessoa pessoa = pessoaRepository.findById(cpf); 
+		if(Objects.isNull(pessoa)) {
+			return PessoaDto.builder().cpf(0L).build();
+		}
+		return PessoaDto.builder().cpf(pessoa.getCpf()).nome(pessoa.getNome()).
+				numeroCelular(pessoa.getNumeroCelular()).dataAniversario(pessoa.getDataAniversario().toString())
+				.build();
+	}
+
+	public void save(PessoaDto dto) {
+		Pessoa pessoa = Pessoa.builder().cpf(dto.getCpf()).numeroCelular(dto.getNumeroCelular())
+				.nome(dto.getNome()).build();
+		pessoaRepository.save(pessoa);
 	}
 
 }
