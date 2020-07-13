@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.enel.dto.PessoaDto;
 import com.example.enel.service.EnderecoService;
 import com.example.enel.service.PessoaService;
+import com.google.common.base.Strings;
 
 @RestController
 public class PessoaController {
@@ -49,20 +49,26 @@ public class PessoaController {
 	
 	@RequestMapping(value = "/pessoa/atualiza/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<PessoaDto> atualiza(@PathVariable(value = "id") long id,
-			@RequestBody PessoaDto pessoaDto){
+			@RequestBody PessoaDto pessoaDto) throws Exception{
+
 		PessoaDto dto = pessoaService.getById(id);
+		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dto.getDataAniversario());
 		if(!Objects.equals(dto.getCpf(), 0L)) {
-			pessoaDto.setCpf(id);
-			if(Strings.isEmpty(pessoaDto.getNome())){
+			pessoaDto.setCpf(dto.getCpf());
+			if(Strings.isNullOrEmpty(pessoaDto.getNome())){
 				pessoaDto.setNome(dto.getNome());
 			}
-			if(Strings.isEmpty(pessoaDto.getNumeroCelular())) {
+			if(Strings.isNullOrEmpty(pessoaDto.getNumeroCelular())) {
 				pessoaDto.setNumeroCelular(dto.getNumeroCelular());
 			}
-			pessoaService.save(dto);
+			if(Strings.isNullOrEmpty(pessoaDto.getDataAniversario())) {
+				pessoaDto.setDataAniversario(dto.getDataAniversario());
+			}
+			pessoaService.save(pessoaDto,date);
+			return new ResponseEntity<PessoaDto>(HttpStatus.ACCEPTED);
 		}
+		return new ResponseEntity<PessoaDto>(HttpStatus.BAD_REQUEST);
 		
-		return null;
 	}
 }
 

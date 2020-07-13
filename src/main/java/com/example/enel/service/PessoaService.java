@@ -38,9 +38,10 @@ public class PessoaService {
 				.build();
 	}
 
-	public void save(PessoaDto dto) {
+	public void save(PessoaDto dto, Date date) {
 		Pessoa pessoa = Pessoa.builder().cpf(dto.getCpf()).numeroCelular(dto.getNumeroCelular())
-				.nome(dto.getNome()).build();
+				.nome(dto.getNome()).dataAniversario(date)
+				.build();
 		pessoaRepository.save(pessoa);
 	}
 
