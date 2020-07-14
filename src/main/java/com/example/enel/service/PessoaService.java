@@ -45,4 +45,8 @@ public class PessoaService {
 		pessoaRepository.save(pessoa);
 	}
 
+	public void delete(long id) {
+		pessoaRepository.deleteById(id);
+	}
+
 }

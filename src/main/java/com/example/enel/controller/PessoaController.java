@@ -23,72 +23,60 @@ public class PessoaController {
 
 	@Autowired
 	PessoaService pessoaService;
-	
+
 	@Autowired
 	EnderecoService enderecoService;
-	
+
 	@RequestMapping(value = "/pessoa/cadastro", method = RequestMethod.POST)
-	public ResponseEntity<PessoaDto> cadastro(@RequestBody PessoaDto pessoaDto) throws Exception{
-		
-		if(Objects.nonNull(pessoaDto)) {
-			Date date = new SimpleDateFormat("dd/MM/yyyy").parse(pessoaDto.getDataAniversario());  
-			pessoaService.cadastrar(pessoaDto,date);
+	public ResponseEntity<PessoaDto> cadastro(@RequestBody PessoaDto pessoaDto) throws Exception {
+
+		if (Objects.nonNull(pessoaDto)) {
+			Date date = new SimpleDateFormat("dd/MM/yyyy").parse(pessoaDto.getDataAniversario());
+			pessoaService.cadastrar(pessoaDto, date);
 			return new ResponseEntity<PessoaDto>(pessoaDto, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<PessoaDto>(HttpStatus.BAD_REQUEST);
 	}
-	
+
+	@RequestMapping(value = "/pessoa/deleta/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<PessoaDto> deletaPessoa(@PathVariable(value = "id") long id) {
+		try {
+			pessoaService.delete(id);
+			return new ResponseEntity<PessoaDto>(HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@RequestMapping(value = "/pessoa/busca/{id}", method = RequestMethod.GET)
-	public ResponseEntity<PessoaDto> buscaDadosPessoa(@PathVariable(value = "id") long id){
+	public ResponseEntity<PessoaDto> buscaDadosPessoa(@PathVariable(value = "id") long id) {
 		PessoaDto pessoaDto = pessoaService.getById(id);
-		if(!Objects.equals(pessoaDto.getCpf(), 0L)) {
+		if (!Objects.equals(pessoaDto.getCpf(), 0L)) {
 			return new ResponseEntity<PessoaDto>(pessoaDto, HttpStatus.FOUND);
 		}
 		return new ResponseEntity<PessoaDto>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@RequestMapping(value = "/pessoa/atualiza/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<PessoaDto> atualiza(@PathVariable(value = "id") long id,
-			@RequestBody PessoaDto pessoaDto) throws Exception{
-
+			@RequestBody PessoaDto pessoaDto)
+			throws Exception {
 		PessoaDto dto = pessoaService.getById(id);
 		Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dto.getDataAniversario());
-		if(!Objects.equals(dto.getCpf(), 0L)) {
+		if (!Objects.equals(dto.getCpf(), 0L)) {
 			pessoaDto.setCpf(dto.getCpf());
-			if(Strings.isNullOrEmpty(pessoaDto.getNome())){
+			if (Strings.isNullOrEmpty(pessoaDto.getNome())) {
 				pessoaDto.setNome(dto.getNome());
 			}
-			if(Strings.isNullOrEmpty(pessoaDto.getNumeroCelular())) {
+			if (Strings.isNullOrEmpty(pessoaDto.getNumeroCelular())) {
 				pessoaDto.setNumeroCelular(dto.getNumeroCelular());
 			}
-			if(Strings.isNullOrEmpty(pessoaDto.getDataAniversario())) {
+			if (Strings.isNullOrEmpty(pessoaDto.getDataAniversario())) {
 				pessoaDto.setDataAniversario(dto.getDataAniversario());
 			}
-			pessoaService.save(pessoaDto,date);
+			pessoaService.save(pessoaDto, date);
 			return new ResponseEntity<PessoaDto>(HttpStatus.ACCEPTED);
 		}
 		return new ResponseEntity<PessoaDto>(HttpStatus.BAD_REQUEST);
-		
 	}
 }
-
-
-
-//@RequestMapping(value = "/weather/{id}",method = RequestMethod.PUT)
-//public ResponseEntity<CityForecastDto> alterInformation(@PathVariable (value = "id") long id, 
-//		@RequestBody CityForecastDto cityForecastDto){
-//	
-//	CityForecastDto dto = forecastService.verify(id);
-//	if(Objects.nonNull(dto)){
-//		cityForecastDto.setId(id);
-//		if(Strings.isNullOrEmpty(cityForecastDto.getName())) {
-//			cityForecastDto.setName(dto.getName());
-//		}
-//		if(Strings.isNullOrEmpty(cityForecastDto.getCity())) {
-//			cityForecastDto.setCity(dto.getCity());
-//		}
-//		forecastService.save(cityForecastDto);
-//		return new ResponseEntity<CityForecastDto>(cityForecastDto,HttpStatus.OK);
-//	}
-//	return new ResponseEntity<CityForecastDto>(HttpStatus.BAD_REQUEST);
-//}
