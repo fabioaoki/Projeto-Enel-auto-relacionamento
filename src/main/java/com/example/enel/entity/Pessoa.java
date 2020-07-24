@@ -36,9 +36,7 @@ public class Pessoa implements Serializable {
 	@Column(name = "numero_celular")
 	private String numeroCelular;
 
-	//	@OneToOne(optional=false)
-	
 	@OneToOne(optional=true)
-	@JoinColumn(name = "cpf_origem", referencedColumnName = "cpf")
+	@JoinColumn(name = "cpf_origem", referencedColumnName = "cpf",insertable = true, updatable = true, nullable = true)
 	private Pessoa cpfOrigem;
 }

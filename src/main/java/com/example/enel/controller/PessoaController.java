@@ -37,6 +37,21 @@ public class PessoaController {
 		}
 		return new ResponseEntity<PessoaDto>(HttpStatus.BAD_REQUEST);
 	}
+	
+	@RequestMapping(value = "/pessoa/cadastroFiho/{id}", method = RequestMethod.POST)
+	public ResponseEntity<PessoaDto> cadastroFilho(@PathVariable(value = "id") long id,
+			@RequestBody PessoaDto pessoaDto) throws Exception{
+		if(Objects.nonNull(pessoaDto)) {
+			PessoaDto pai = pessoaService.getById(id);
+			if(Objects.nonNull(pai) && pessoaDto.getCpfOrigem() == null) {
+				Date date = new SimpleDateFormat("dd/MM/yyyy").parse(pessoaDto.getDataAniversario());
+				pessoaDto.setCpfOrigem(pai.getCpfOrigem());
+				pessoaService.cadastrarFilho(pessoaDto, date, id);
+				return new ResponseEntity<PessoaDto>(HttpStatus.CREATED);
+			}
+		}
+		return new ResponseEntity<PessoaDto>(HttpStatus.BAD_REQUEST);
+	}
 
 	@RequestMapping(value = "/pessoa/deleta/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<PessoaDto> deletaPessoa(@PathVariable(value = "id") long id) {

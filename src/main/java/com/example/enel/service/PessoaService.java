@@ -22,8 +22,7 @@ public class PessoaService {
 
 	public PessoaDto cadastrar(PessoaDto pessoaDto, Date date) {
 		Pessoa pessoa = Pessoa.builder().cpf(pessoaDto.getCpf()).dataAniversario(date)
-				.nome(pessoaDto.getNome()).numeroCelular(pessoaDto.getNumeroCelular())
-				.cpfOrigem(pessoaDto.getCpfOrigem()).build();
+				.nome(pessoaDto.getNome()).numeroCelular(pessoaDto.getNumeroCelular()).build();
 		pessoaRepository.save(pessoa);
 		return pessoaDto;
 	}
@@ -49,4 +48,11 @@ public class PessoaService {
 		pessoaRepository.deleteById(id);
 	}
 
+	public PessoaDto cadastrarFilho(PessoaDto pessoaDto, Date date, long id) {
+		Pessoa pessoa = Pessoa.builder().cpf(pessoaDto.getCpf()).dataAniversario(date)
+				.nome(pessoaDto.getNome()).numeroCelular(pessoaDto.getNumeroCelular())
+				.cpfOrigem(pessoaDto.getCpfOrigem()).build();
+		pessoaRepository.save(pessoa);
+		return pessoaDto;
+	}
 }
